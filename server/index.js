@@ -1,7 +1,21 @@
-const express= require('express')
-const path =require ('path')
+const express= require('express');
+const path =require ('path');
+import webpack  from 'webpack'
+import webpackMiddleware from 'webpack-dev-middleware'
+const webpackConfig =require ('../webpack.config.dev')
+import webpackHotMiddleware from 'webpack-hot-middleware'
 
 let app = express();
+const compiler = webpack(webpackConfig);
+
+
+app.use(webpackMiddleware(compiler, {
+    hot: true,
+    publicPath: webpackConfig.output.publicPath,
+    noInfo: true
+}));
+app.use(webpackHotMiddleware(compiler));
+
 
 app.get('/*', (req,res)=> {
     res.sendFile(path.join(__dirname, './index.html'))
